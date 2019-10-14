@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hph.questionnaire.dao.TUserMapper">
+	<resultMap id="BaseResultMap" type="com.hph.questionnaire.model.TUser">
+		<!-- WARNING - @mbg.generated -->
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="phone" jdbcType="VARCHAR" property="phone" />
+		<result column="email" jdbcType="VARCHAR" property="email" />
+		<result column="password" jdbcType="VARCHAR" property="password" />
+		<result column="avatar" jdbcType="VARCHAR" property="avatar" />
+		<result column="role_id" jdbcType="INTEGER" property="roleId" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+		<result column="sex" jdbcType="VARBINARY" property="sex" />
+	</resultMap>
+	<resultMap type="com.hph.questionnaire.dto.UserDTO" id="userDTO">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="phone" jdbcType="VARCHAR" property="phone" />
+		<result column="email" jdbcType="VARCHAR" property="email" />
+		<result column="password" jdbcType="VARCHAR" property="password" />
+		<result column="avatar" jdbcType="VARCHAR" property="avatar" />
+		<result column="role_id" jdbcType="INTEGER" property="roleId" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+		<result column="sex" jdbcType="VARBINARY" property="sex" />
+		<result column="roleName" jdbcType="VARCHAR" property="roleName" />
+		<collection property="permissions" ofType="com.hph.questionnaire.model.TPermission">
+			<id column="permission_id" jdbcType="INTEGER" property="id" />
+			<result column="value" jdbcType="VARCHAR" property="value" />
+			<result column="uri" jdbcType="VARCHAR" property="uri" />
+			<result column="description" jdbcType="VARCHAR" property="description" />
+		</collection>
+
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, name, phone, email, password, avatar, role_id,
+		create_time,
+		update_time
+	</sql>
+
+	<select id="getUserInfo" parameterType="com.hph.questionnaire.model.TUser" resultMap="userDTO">
+
+		select
+		u.id, u.name, u.phone, u.email, u.password, u.avatar,u.role_id,u.create_time,u.update_time
+		,r.name as roleName
+		,p.id as permission_id,p.value,p.uri,p.description
+		from t_user u
+		left join
+		t_role r on u.role_id = r.id
+		,t_permission p
+		<where>
+			<if test="name != null">
+				and u.name = #{name,jdbcType=VARCHAR}
+			</if>
+			and p.id in (select pr.permission_id from t_permission_role pr where u.role_id = pr.role_id)
+		</where>
+
+	</select>
+</mapper>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>index</title>
+</head>
+<body>
+	<@shiro.guest>  
+	    	您当前是游客，<a href="/user/login">登录</a>
+	</@shiro.guest> 
+	<@shiro.user>  
+	    	欢迎[<@shiro.principal/>]登录，<a href="/user/logout">退出</a>  
+	    	<br/>
+	    	<@shiro.lacksPermission name="user:delete">  
+	   			 用户[<@shiro.principal/>]不拥有user:delete权限
+			</@shiro.lacksPermission> 
+			<@shiro.hasPermission name="user:delete">  
+   				 用户[<@shiro.principal/>]拥有user:delete权限
+			</@shiro.hasPermission>  
+	</@shiro.user>  
+</body>
+</html>
